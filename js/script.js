@@ -196,7 +196,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loginForm.onsubmit = (e) => {
         e.preventDefault(); 
-        const u = document.getElementById('login-user').value;
+        const u = document.getElementById('login-user').value.trim();
+        if (!u) {
+            showToast("請輸入您的稱呼才能登入！", "error");
+            return; 
+        }
         currentUser = { name: u, username: u };
         authModal.style.display = 'none'; 
         renderUserUI(); 
