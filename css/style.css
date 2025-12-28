@@ -113,4 +113,4 @@ body { font-family: 'Noto Sans TC', sans-serif; background: var(--dark); color: 
 
 .contact-section { padding: 100px 0; max-width: 600px; margin: 0 auto; }
 .footer { padding: 40px 0; text-align: center; border-top: 1px solid #222; margin-top: 50px; color: #888; }
-@media (max-width: 768px) { .hero-content h1 { font-size: 2.5rem; } .navbar { position: absolute; } .nav-bottom { justify-content: start; } .nav-links { padding-left: 20px; } body { padding-top: 80px; } .detail-content { flex-direction: column; } .detail-img-box img { max-height: 300px; } }
+@media (max-width: 768px) { .hero-content h1 { font-size: 2.5rem; } .navbar { position: fixed; } .nav-bottom { justify-content: start; } .nav-links { padding-left: 20px; } body { padding-top: 80px; } .detail-content { flex-direction: column; } .detail-img-box img { max-height: 300px; } }
