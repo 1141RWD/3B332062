@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RUSH MOTO | 極速改裝精品</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -22,15 +23,11 @@
         <div class="nav-top">
             <div class="container">
                 <a href="index.html" class="logo">RUSH<span>MOTO</span></a>
-                
                 <div class="user-actions">
                     <div id="user-menu"></div>
-                    
                     <div class="cart-icon" id="open-cart">
-                        <div class="btn-cart-style">
-                            <span id="cart-target">購物車</span>
-                            <span id="cart-count">0</span>
-                        </div>
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cart-count">0</span>
                     </div>
                 </div>
             </div>
@@ -65,7 +62,7 @@
                 </div>
             </div>
             <div class="slide">
-                <img src="image/排氣管.jpg" alt="Slider 2" onerror="this.src='https://images.unsplash.com/photo-1611082596851-93375f922767?w=1600'">
+                <img src="image/排氣管.jpg" alt="Slider 2">
                 <div class="hero-content">
                     <h1>極致性能<span>動力升級</span></h1>
                     <p>專業鈦合金排氣系統，釋放引擎潛能</p>
@@ -89,22 +86,23 @@
     </header>
 
     <main class="container">
+        
         <section id="events" class="events-section">
             <h2 class="section-title">最新活動資訊</h2>
             <div class="events-grid">
                 <div class="event-card reveal">
                     <div class="event-img"><img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=500" alt="Event 1"></div>
                     <div class="event-content">
-                        <span class="event-date">2026.01.01 - 2026.02.28</span>
+                        <span class="event-date">2025.01.01 - 2025.02.28</span>
                         <h3>新手改裝・制動升級專案</h3>
                         <p>購買任一款 Brembo 卡鉗，即贈送金屬油管一條，並享有免費安裝服務。</p>
                         <a href="#products" class="btn-event" onclick="triggerFilter('brake')">選購煞車</a>
                     </div>
                 </div>
                 <div class="event-card reveal">
-                    <div class="event-img"><img src="image/排氣管.jpg" alt="Event 2" onerror="this.src='https://images.unsplash.com/photo-1611082596851-93375f922767?w=500'"></div>
+                    <div class="event-img"><img src="image/排氣管.jpg" alt="Event 2"></div>
                     <div class="event-content">
-                        <span class="event-date">2026.01.15 - 2026.03.01</span>
+                        <span class="event-date">2025.01.15 - 2025.03.01</span>
                         <h3>聲浪覺醒・排氣管舊換新</h3>
                         <p>持任一品牌舊管來店升級「Moto R」或「章魚280」，最高現折 $3,000 元。</p>
                         <a href="#products" class="btn-event" onclick="triggerFilter('exhaust')">選購排氣管</a>
@@ -125,23 +123,9 @@
         <section id="shop-start" class="shop-section">
             <div class="section-header-center">
                 <h2 class="section-title">熱門改裝精品</h2>
-                
-                <div class="product-controls" style="
-                    display: flex; 
-                    justify-content: center; 
-                    align-items: center; 
-                    gap: 15px; 
-                    flex-wrap: wrap; 
-                    margin-top: 20px;
-                    width: 100%;
-                ">
-                    <input type="text" id="product-search" class="control-style" placeholder="搜尋商品名稱..." style="padding-left: 15px;">
-
-                    <select id="sort-select" onchange="handleSort()" class="control-style">
-                        <option value="default">預設排序</option>
-                        <option value="price-low">💰 價格：低 ⮕ 高</option>
-                        <option value="price-high">💎 價格：高 ⮕ 低</option>
-                    </select>
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="product-search" placeholder="搜尋商品名稱...">
                 </div>
             </div>
             <div id="all-products-container"></div>
@@ -149,10 +133,10 @@
 
         <section id="contact" class="contact-section">
             <h2 class="section-title">預約諮詢服務</h2>
-            <form id="contact-form" class="contact-form" onsubmit="submitContact(event)">
-                <div class="form-group"><input type="text" id="contact-name" placeholder="您的姓名" required></div>
-                <div class="form-group"><input type="email" id="contact-email" placeholder="電子郵件" required></div>
-                <textarea id="contact-message" rows="4" placeholder="請描述您的車種與改裝需求..."></textarea>
+            <form id="contact-form" class="contact-form">
+                <div class="form-group"><input type="text" id="name" placeholder="您的姓名" required></div>
+                <div class="form-group"><input type="email" id="email" placeholder="電子郵件" required></div>
+                <textarea id="message" rows="4" placeholder="請描述您的車種與改裝需求..."></textarea>
                 <button type="submit" class="btn-submit">送出訊息</button>
                 <p id="form-status"></p>
             </form>
@@ -161,7 +145,7 @@
 
     <div class="modal" id="product-detail-modal">
         <div class="modal-content detail-content">
-            <span class="close-modal" id="close-detail" style="font-size:2rem; line-height:1;">&times;</span>
+            <span class="close-modal" id="close-detail">&times;</span>
             <div class="detail-layout">
                 <div class="detail-img-box">
                     <img id="detail-img" src="" alt="商品圖片">
@@ -181,7 +165,7 @@
 
     <div class="modal" id="cart-modal">
         <div class="modal-content">
-            <span class="close-modal" id="close-cart" style="font-size:2rem; line-height:1;">&times;</span>
+            <span class="close-modal" id="close-cart">&times;</span>
             <h2>您的購物清單</h2>
             <ul id="cart-items"></ul>
             <div class="cart-total">總計: NT$ <span id="total-price">0</span></div>
@@ -194,9 +178,10 @@
 
     <div class="modal" id="auth-modal">
         <div class="modal-content auth-content">
-            <span class="close-modal" id="close-auth" style="font-size:2rem; line-height:1;">&times;</span>
+            <span class="close-modal" id="close-auth">&times;</span>
             <form id="login-form">
                 <h2>會員登入</h2>
+                <p style="color:#888; font-size:0.9rem; margin-bottom:15px; text-align:center;">測試帳號：admin&nbsp;&nbsp;密碼：1234</p>
                 <div class="form-group">
                     <label>您的稱呼</label>
                     <input type="text" id="login-user">
@@ -207,47 +192,11 @@
                 </div>
                 <button type="submit" class="btn-submit">立即登入</button>
             </form>
-            <form id="register-form" style="display: none;">
-                <h2>會員註冊</h2>
-                <div class="form-group">
-                    <label>設定帳號</label>
-                    <input type="text" id="reg-user" required>
-                </div>
-                <div class="form-group">
-                    <label>設定密碼</label>
-                    <input type="password" id="reg-pass" required>
-                </div>
-                <button type="submit" class="btn-submit">完成註冊</button>
-                <p style="text-align:center; margin-top:15px; cursor:pointer; color:var(--primary);" onclick="switchAuth('login')">已有帳號？返回登入</p>
-            </form>
-            <p id="to-reg" style="text-align:center; margin-top:15px; cursor:pointer; color:var(--primary);" onclick="switchAuth('register')">還沒帳號？點此註冊</p>
-        </div>
-    </div>
-
-    <div class="modal" id="admin-modal">
-        <div class="modal-content admin-content" style="max-width: 800px;">
-            <span class="close-modal" id="close-admin" style="font-size:2rem; line-height:1;">&times;</span>
-            <h2>🔧 管理者後台</h2>
-            <div style="margin-top:20px;">
-                <h3>📩 諮詢留言板</h3>
-                <table style="width:100%; margin-top:10px; border-collapse: collapse;">
-                    <thead>
-                        <tr style="background:#333; color:white; text-align:left;">
-                            <th style="padding:10px;">時間</th>
-                            <th style="padding:10px;">姓名</th>
-                            <th style="padding:10px;">內容</th>
-                            <th style="padding:10px;">操作</th>
-                        </tr>
-                    </thead>
-                    <tbody id="admin-msg-list-body">
-                        </tbody>
-                </table>
-            </div>
         </div>
     </div>
 
     <footer class="footer">
-        <div class="container"><p>&copy; RUSH MOTO Custom Shop. 【3B332062 黃崇穎】</p></div>
+        <div class="container"><p>&copy; RUSH MOTO Custom Shop.&nbsp;【3B332062&nbsp;黃崇穎】</p></div>
     </footer>
 
     <script src="js/script.js"></script>
