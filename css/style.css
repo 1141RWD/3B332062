@@ -130,7 +130,7 @@ select.control-style { width: auto; cursor: pointer; text-align: center; }
 .tag { color: var(--primary); font-size: 12px; font-weight: bold; display: block; margin-bottom: 5px; }
 .card-info h3 { font-size: 1.1rem; margin-bottom: 10px; height: 45px; overflow: hidden; }
 .price { font-size: 1.4rem; margin: 10px 0; font-weight: bold; }
-.btn-add { width: 100%; background: transparent; border: 1px solid var(--primary); color: white; padding: 10px; border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: bold; position: relative; z-index: 2; }
+.btn-add { width: 100%; background: transparent; border: 1px solid var(--primary); color: white; padding: 10px; border-radius: 8px; cursor: pointer; transition: 0.3s; font-weight: bold; position: relative; z-index: 10; }
 .btn-add:hover { background: var(--primary); }
 
 

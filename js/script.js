@@ -257,14 +257,44 @@ document.addEventListener('DOMContentLoaded', () => {
     renderUserUI(); renderProducts(); updateCart();
 
     // 點擊事件監聽
+ // === 請將原本的 click 監聽器替換成這一段 ===
     document.addEventListener('click', (e) => {
-        if(e.target.id === 'open-auth') { document.getElementById('auth-modal').style.display = 'flex'; switchAuth('login'); }
-        if(e.target.classList.contains('close-modal')) { e.target.closest('.modal').style.display = 'none'; }
-        if(e.target.classList.contains('modal')) e.target.style.display = 'none';
-        if(e.target.id === 'logout-btn') { if(confirm("確定登出？")) { currentUser = null; renderUserUI(); showToast("已登出"); } }
-        if(e.target.id === 'admin-btn') { document.getElementById('admin-modal').style.display = 'flex'; renderAdminMessages(); }
-        if(e.target.id === 'open-cart') document.getElementById('cart-modal').style.display = 'flex';
+        // 1. 修正：開啟登入視窗 (使用 closest 確保點擊按鈕內部也能觸發)
+        if(e.target.closest('#open-auth') || e.target.id === 'open-auth') { 
+            document.getElementById('auth-modal').style.display = 'flex'; 
+            switchAuth('login'); 
+        }
+
+        // 2. 修正：關閉各類 Modal (通用)
+        if(e.target.classList.contains('close-modal')) { 
+            e.target.closest('.modal').style.display = 'none'; 
+        }
+        if(e.target.classList.contains('modal')) {
+            e.target.style.display = 'none';
+        }
+
+        // 3. 登出確認
+        if(e.target.id === 'logout-btn') { 
+            if(confirm("確定要登出嗎？")) { 
+                currentUser = null; 
+                renderUserUI(); 
+                showToast("已登出"); 
+            } 
+        }
+
+        // 4. 開啟後台
+        if(e.target.id === 'admin-btn') { 
+            document.getElementById('admin-modal').style.display = 'flex'; 
+            renderAdminMessages(); 
+        }
+
+        // 5. 🔥 重點修正：開啟購物車 🔥
+        // 使用 closest('#open-cart')，這樣就算點到裡面的 "購物車" 文字或數字，也能成功打開！
+        if(e.target.closest('#open-cart')) { 
+            document.getElementById('cart-modal').style.display = 'flex'; 
+        }
         
+        // 6. 導覽列分類過濾
         if(e.target.classList.contains('nav-cat')) {
             e.preventDefault();
             triggerFilter(e.target.dataset.filter);
