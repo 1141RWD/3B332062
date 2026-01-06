@@ -207,6 +207,20 @@
                 </div>
                 <button type="submit" class="btn-submit">立即登入</button>
             </form>
+            <form id="register-form" style="display: none;">
+                <h2>會員註冊</h2>
+                <div class="form-group">
+                    <label>設定帳號</label>
+                    <input type="text" id="reg-user" required>
+                </div>
+                <div class="form-group">
+                    <label>設定密碼</label>
+                    <input type="password" id="reg-pass" required>
+                </div>
+                <button type="submit" class="btn-submit">完成註冊</button>
+                <p style="text-align:center; margin-top:15px; cursor:pointer; color:var(--primary);" onclick="switchAuth('login')">已有帳號？返回登入</p>
+            </form>
+            <p id="to-reg" style="text-align:center; margin-top:15px; cursor:pointer; color:var(--primary);" onclick="switchAuth('register')">還沒帳號？點此註冊</p>
         </div>
     </div>
 

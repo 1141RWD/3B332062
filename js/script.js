@@ -1,5 +1,4 @@
-
-
+/* === RUSH MOTO 完整腳本修正版 === */
 
 const defaultProducts = [
     { id: 101, name: "合格亞杰PL1排氣管", price: 15500, category: "exhaust", img: "image/pl1.jpg", description: "一款專為機車設計的合法認證改裝排氣管，其設計旨在兼顧競技風格的「砲管」外觀與符合環保法規的噪音標準。" },
@@ -38,7 +37,6 @@ const defaultProducts = [
     { id: 705, name: "APEXX油箱蓋", price: 680, category: "accessories", img: "image/apexx3.jpg", description: "美化並提升原廠油箱蓋的外觀，採用陽極上色和鍍鈦螺絲點綴。" }
 ];
 
-
 let products = JSON.parse(localStorage.getItem('rush_products')) || defaultProducts;
 let currentUser = null; 
 let cart = JSON.parse(localStorage.getItem('rush_cart')) || []; 
@@ -49,21 +47,7 @@ const categoryNames = {
     lighting: "燈系全套", exterior: "外觀升級", accessories: "質感小物"
 };
 
-
-
-
-
-
-function saveData() {
-    localStorage.setItem('rush_products', JSON.stringify(products));
-}
-
-
-function saveCart() {
-    localStorage.setItem('rush_cart', JSON.stringify(cart));
-}
-
-
+// 全域函數定義 (放在 DOMContentLoaded 之外)
 window.showToast = function(msg, type = "success") {
     const container = document.getElementById('toast-container');
     const toast = document.createElement('div');
@@ -74,26 +58,36 @@ window.showToast = function(msg, type = "success") {
     setTimeout(() => { toast.style.animation = "fadeOut 0.3s forwards"; setTimeout(() => toast.remove(), 300); }, 3000);
 };
 
+window.switchAuth = function(type) {
+    const loginForm = document.getElementById('login-form');
+    const regForm = document.getElementById('register-form');
+    const toRegHint = document.getElementById('to-reg');
+    if (type === 'register') {
+        loginForm.style.display = 'none';
+        regForm.style.display = 'block';
+        toRegHint.style.display = 'none';
+    } else {
+        loginForm.style.display = 'block';
+        regForm.style.display = 'none';
+        toRegHint.style.display = 'block';
+    }
+};
+
+function saveData() { localStorage.setItem('rush_products', JSON.stringify(products)); }
+function saveCart() { localStorage.setItem('rush_cart', JSON.stringify(cart)); }
 
 function addToCartAnimation(btn, imgUrl) {
     const cartIcon = document.getElementById('cart-target'); 
     if (!cartIcon) return;
-
     const imgClone = document.createElement('img');
     imgClone.src = imgUrl; imgClone.className = 'flying-img';
-    
-    
     const rect = btn.closest('.card') ? btn.closest('.card').querySelector('img').getBoundingClientRect() : btn.closest('.detail-content').querySelector('img').getBoundingClientRect();
     const cartRect = cartIcon.getBoundingClientRect();
-    
     imgClone.style.top = `${rect.top}px`; 
     imgClone.style.left = `${rect.left}px`; 
     imgClone.style.width = `${rect.width}px`; 
     imgClone.style.height = `${rect.height}px`;
-    
     document.body.appendChild(imgClone);
-    
-    
     setTimeout(() => { 
         imgClone.style.top = `${cartRect.top}px`; 
         imgClone.style.left = `${cartRect.left}px`; 
@@ -101,8 +95,6 @@ function addToCartAnimation(btn, imgUrl) {
         imgClone.style.height = '20px'; 
         imgClone.style.opacity = '0.5'; 
     }, 10);
-    
-    
     setTimeout(() => { 
         imgClone.remove(); 
         const badge = document.getElementById('cart-count');
@@ -111,11 +103,6 @@ function addToCartAnimation(btn, imgUrl) {
     }, 800);
 }
 
-
-
-
-
-
 window.openProductDetail = function(p) {
     const modal = document.getElementById('product-detail-modal');
     document.getElementById('detail-img').src = p.img;
@@ -123,20 +110,15 @@ window.openProductDetail = function(p) {
     document.getElementById('detail-tag').innerText = categoryNames[p.category];
     document.getElementById('detail-desc').innerText = p.description || "此商品目前沒有詳細說明。";
     document.getElementById('detail-price').innerText = `NT$ ${p.price.toLocaleString()}`;
-    
     const addBtn = document.getElementById('detail-add-btn');
     addBtn.onclick = (e) => {
-        cart.push(p); 
-        updateCart();
-        saveCart();
+        cart.push(p); updateCart(); saveCart();
         addToCartAnimation(e.target, p.img);
         showToast(`已加入: ${p.name}`);
         modal.style.display = 'none';
     };
-
     modal.style.display = 'flex';
 };
-
 
 window.triggerFilter = function(filter) { 
     currentCategory = filter;
@@ -145,31 +127,21 @@ window.triggerFilter = function(filter) {
     document.getElementById('shop-start').scrollIntoView({ behavior: 'smooth' }); 
 };
 
-
 window.handleSort = function() {
     const sortValue = document.getElementById('sort-select').value;
     const searchTerm = document.getElementById('product-search').value;
-
-    if (sortValue === 'price-low') {
-        products.sort((a, b) => a.price - b.price);
-    } else if (sortValue === 'price-high') {
-        products.sort((a, b) => b.price - a.price);
-    } else {
-        products.sort((a, b) => a.id - b.id);
-    }
-
+    if (sortValue === 'price-low') products.sort((a, b) => a.price - b.price);
+    else if (sortValue === 'price-high') products.sort((a, b) => b.price - a.price);
+    else products.sort((a, b) => a.id - b.id);
     renderProducts(currentCategory, searchTerm);
     showToast(`排序已更新`);
 };
-
 
 function renderProducts(filter = 'all', searchTerm = '') {
     const container = document.getElementById('all-products-container');
     if(!container) return;
     container.innerHTML = '';
-    
     let categoriesToShow = filter === 'all' ? Object.keys(categoryNames) : [filter];
-
     categoriesToShow.forEach(catKey => {
         const filteredProds = products.filter(p => p.category === catKey && p.name.toLowerCase().includes(searchTerm.toLowerCase()));
         if (filteredProds.length > 0) {
@@ -177,15 +149,10 @@ function renderProducts(filter = 'all', searchTerm = '') {
             section.className = 'category-section reveal';
             section.innerHTML = `<h3 class="category-title">${categoryNames[catKey]}</h3><div class="product-grid"></div>`;
             const grid = section.querySelector('.product-grid');
-            
             filteredProds.forEach(p => {
                 const card = document.createElement('div');
                 card.className = 'card';
-                card.onclick = (e) => {
-                    if(!e.target.classList.contains('btn-add')) {
-                        openProductDetail(p);
-                    }
-                };
+                card.onclick = (e) => { if(!e.target.classList.contains('btn-add')) openProductDetail(p); };
                 card.innerHTML = `
                     <div class="card-img"><img src="${p.img}" alt="${p.name}"></div>
                     <div class="card-info">
@@ -193,37 +160,23 @@ function renderProducts(filter = 'all', searchTerm = '') {
                         <h3>${p.name}</h3>
                         <p class="price">NT$ ${p.price.toLocaleString()}</p>
                         <button class="btn-add" data-id="${p.id}" data-img="${p.img}">加入購物車</button>
-                    </div>
-                `;
+                    </div>`;
                 grid.appendChild(card);
             });
             container.appendChild(section);
         }
     });
-
-    
     document.querySelectorAll('.btn-add').forEach(btn => {
         btn.onclick = (e) => {
             e.stopPropagation();
             const id = parseInt(btn.dataset.id);
-            const img = btn.dataset.img;
             const p = products.find(prod => prod.id === id);
-            cart.push(p); 
-            updateCart();
-            saveCart();
-            addToCartAnimation(e.target, img);
+            cart.push(p); updateCart(); saveCart();
+            addToCartAnimation(e.target, btn.dataset.img);
             showToast(`已加入: ${p.name}`);
         };
     });
-
-    
-    document.querySelectorAll('.nav-cat').forEach(a => a.classList.remove('active'));
-    document.querySelectorAll(`.nav-cat[data-filter="${filter}"]`).forEach(a => a.classList.add('active'));
-    
-    
-    setTimeout(() => { document.querySelectorAll('.reveal').forEach(el => { if(el.getBoundingClientRect().top < window.innerHeight) { el.style.opacity = "1"; el.style.transform = "translateY(0)"; } }); }, 100); 
 }
-
 
 function updateCart() {
     document.getElementById('cart-count').innerText = cart.length;
@@ -234,46 +187,30 @@ function updateCart() {
                 <div style="font-size:0.85rem; color:#aaa;">$${p.price.toLocaleString()}</div>
             </div>
             <button class="btn-remove-item" onclick="removeFromCart(${index})">刪除</button>
-        </li>
-    `).join('');
+        </li>`).join('');
     const total = cart.reduce((sum, p) => sum + p.price, 0);
     document.getElementById('total-price').innerText = total.toLocaleString();
 }
 
-
 window.removeFromCart = function(index) {
-    cart.splice(index, 1);
-    updateCart();
-    saveCart();
+    cart.splice(index, 1); updateCart(); saveCart();
     showToast("已移除商品");
 }
 
-
-
-
-
 window.submitContact = function(event) {
     event.preventDefault();
-    const name = document.getElementById('contact-name').value;
-    const email = document.getElementById('contact-email').value;
-    const message = document.getElementById('contact-message').value;
-
     const newMsg = {
         id: Date.now(),
-        name: name,
-        email: email,
-        content: message,
+        name: document.getElementById('contact-name').value,
+        email: document.getElementById('contact-email').value,
+        content: document.getElementById('contact-message').value,
         time: new Date().toLocaleString()
     };
-
     let msgList = JSON.parse(localStorage.getItem('site_messages')) || [];
     msgList.push(newMsg);
     localStorage.setItem('site_messages', JSON.stringify(msgList));
-
-    showToast('🎉 您的諮詢已送出！我們會盡快聯絡您。');
+    showToast('🎉 您的諮詢已送出！');
     document.getElementById('contact-form').reset();
-    
-    
     renderAdminMessages();
 }
 
@@ -281,163 +218,92 @@ function renderAdminMessages() {
     const tbody = document.getElementById('admin-msg-list-body');
     if (!tbody) return;
     const msgList = JSON.parse(localStorage.getItem('site_messages')) || [];
-
-    if (msgList.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px;">目前沒有新訊息</td></tr>';
-        return;
-    }
-
+    if (msgList.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">目前沒有新訊息</td></tr>'; return; }
     tbody.innerHTML = msgList.map(msg => `
-        <tr style="border-bottom:1px solid #444;">
-            <td style="padding:10px;">${msg.time}</td>
-            <td style="padding:10px;">${msg.name}</td>
-            <td style="padding:10px;">${msg.content}</td>
-            <td style="padding:10px;">
-                <button class="btn-delete" onclick="deleteMsg(${msg.id})">刪除</button>
-            </td>
-        </tr>
-    `).join('');
+        <tr>
+            <td>${msg.time}</td><td>${msg.name}</td><td>${msg.content}</td>
+            <td><button class="btn-delete" onclick="deleteMsg(${msg.id})">刪除</button></td>
+        </tr>`).join('');
 }
 
 window.deleteMsg = function(id) {
-    if(!confirm("確定刪除此留言？")) return;
+    if(!confirm("確定刪除？")) return;
     let msgList = JSON.parse(localStorage.getItem('site_messages')) || [];
-    msgList = msgList.filter(m => m.id !== id);
-    localStorage.setItem('site_messages', JSON.stringify(msgList));
+    localStorage.setItem('site_messages', JSON.stringify(msgList.filter(m => m.id !== id)));
     renderAdminMessages();
-    showToast("留言已刪除");
 }
 
-
-
-
-
-
+// 頁面加載處理
 window.onload = () => { document.getElementById('preloader').style.opacity = '0'; setTimeout(() => document.getElementById('preloader').style.display = 'none', 500); };
 
 document.addEventListener('DOMContentLoaded', () => {
-    const userMenu = document.getElementById('user-menu');
-    const authModal = document.getElementById('auth-modal');
-    const cartModal = document.getElementById('cart-modal');
-    const adminModal = document.getElementById('admin-modal');
-    const loginForm = document.getElementById('login-form');
-    const detailModal = document.getElementById('product-detail-modal');
-
-    
-    renderUserUI(); 
-    renderProducts();
-    updateCart();
+    renderUserUI(); renderProducts(); updateCart();
 
     function renderUserUI() {
+        const userMenu = document.getElementById('user-menu');
         if (currentUser) {
             let html = `<span class="user-name-display">Hi, ${currentUser.name}</span>`;
-            if(currentUser.username === 'admin') {
-                html += `<button id="admin-btn" class="btn-admin">後台</button>`;
-            }
+            if(currentUser.username === 'admin') html += `<button id="admin-btn" class="btn-admin">後台</button>`;
             html += `<button id="logout-btn" class="btn-logout">登出</button>`;
             userMenu.innerHTML = html;
         } else { userMenu.innerHTML = `<button id="open-auth" class="btn-nav-auth">登入</button>`; }
     }
 
-    
+    // 事件監聽
     document.addEventListener('click', (e) => {
-        if(e.target.id === 'open-auth') { authModal.style.display = 'flex'; loginForm.style.display = 'block'; }
-        if(e.target.id === 'close-auth') authModal.style.display = 'none';
-        if(e.target.id === 'close-cart') cartModal.style.display = 'none';
-        if(e.target.id === 'close-detail') detailModal.style.display = 'none';
-        if(e.target.id === 'close-admin') adminModal.style.display = 'none';
+        if(e.target.id === 'open-auth') { document.getElementById('auth-modal').style.display = 'flex'; switchAuth('login'); }
+        if(e.target.id === 'close-auth' || e.target.id === 'close-cart' || e.target.id === 'close-detail' || e.target.id === 'close-admin') {
+            e.target.closest('.modal').style.display = 'none';
+        }
         if(e.target.classList.contains('modal')) e.target.style.display = 'none';
-        
-        
-        if(e.target.id === 'logout-btn') { 
-            if(confirm("確定要登出嗎？")) { 
-                currentUser = null; 
-                renderUserUI(); 
-                showToast("已登出"); 
-                adminModal.style.display = 'none';
-            } 
-        }
-
-        
-        if(e.target.id === 'admin-btn') {
-            adminModal.style.display = 'flex';
-            renderAdminMessages();
-        }
-        
-        
-        if(e.target.classList.contains('nav-cat')) {
-            e.preventDefault(); 
-            const filter = e.target.dataset.filter; 
-            triggerFilter(filter);
-        }
+        if(e.target.id === 'logout-btn') { if(confirm("確定登出？")) { currentUser = null; renderUserUI(); showToast("已登出"); } }
+        if(e.target.id === 'admin-btn') { document.getElementById('admin-modal').style.display = 'flex'; renderAdminMessages(); }
     });
 
-    
-   
-
-loginForm.onsubmit = (e) => {
-    e.preventDefault(); 
-    
-    const u = document.getElementById('login-user').value.trim();
-    const p = document.getElementById('login-pass').value.trim();
-    
-    if (!u) { 
-        showToast("請輸入稱呼！", "error"); 
-        return; 
-    }
-
-    
-    if (u === 'admin' && p === '013112') {
-        
-        currentUser = { name: '超級管理員', username: 'admin' };
-        showToast("✅ 管理員權限已啟動", "success");
-    } 
-    else {
-        
-        
-        currentUser = { name: u, username: (u === 'admin' ? 'fake_admin' : u) };
-        
-        
-        showToast(`👋 歡迎回來，${u}`, "success");
-    }
-
-    
-    authModal.style.display = 'none'; 
-    renderUserUI(); 
-};
-
-    
-    const openCartBtn = document.getElementById('open-cart'); 
-    if(openCartBtn) openCartBtn.onclick = () => cartModal.style.display = 'flex';
-
-    document.getElementById('clear-cart').onclick = () => { 
-        if(confirm("確定清空？")) { cart = []; updateCart(); saveCart(); } 
+    // 登入邏輯
+    document.getElementById('login-form').onsubmit = (e) => {
+        e.preventDefault();
+        const u = document.getElementById('login-user').value.trim();
+        const p = document.getElementById('login-pass').value.trim();
+        if (u === 'admin' && p === '013112') {
+            currentUser = { name: '超級管理員', username: 'admin' };
+            showToast("✅ 管理員權限已啟動");
+        } else {
+            let users = JSON.parse(localStorage.getItem('rush_users')) || [];
+            const foundUser = users.find(user => user.username === u && user.password === p);
+            if (foundUser) { currentUser = foundUser; showToast(`👋 歡迎回來，${u}`); }
+            else { showToast("帳號或密碼錯誤！", "error"); return; }
+        }
+        document.getElementById('auth-modal').style.display = 'none';
+        renderUserUI();
     };
-    
+
+    // 註冊邏輯
+    document.getElementById('register-form').onsubmit = (e) => {
+        e.preventDefault();
+        const u = document.getElementById('reg-user').value.trim();
+        const p = document.getElementById('reg-pass').value.trim();
+        let users = JSON.parse(localStorage.getItem('rush_users')) || [];
+        if (users.find(user => user.username === u) || u === 'admin') { showToast("帳號已存在！", "error"); return; }
+        users.push({ username: u, password: p, name: u });
+        localStorage.setItem('rush_users', JSON.stringify(users));
+        showToast("註冊成功！請登入");
+        switchAuth('login');
+    };
+
+    // 購物車按鈕
+    document.getElementById('open-cart').onclick = () => document.getElementById('cart-modal').style.display = 'flex';
+    document.getElementById('clear-cart').onclick = () => { if(confirm("確定清空？")) { cart = []; updateCart(); saveCart(); } };
     document.getElementById('btn-checkout').onclick = () => {
-        if(cart.length===0) { showToast("購物車空的", "error"); return; }
-        if(!currentUser) { showToast("請先登入！", "error"); cartModal.style.display='none'; authModal.style.display='flex'; }
-        else { 
-            showToast("✅ 訂單已送出，謝謝您的光臨！"); 
-            cart = []; updateCart(); saveCart();
-            cartModal.style.display='none'; 
-        }
+        if(cart.length===0) return showToast("購物車空的", "error");
+        if(!currentUser) { showToast("請先登入！", "error"); switchAuth('login'); document.getElementById('auth-modal').style.display='flex'; }
+        else { showToast("✅ 訂單已送出！"); cart = []; updateCart(); saveCart(); document.getElementById('cart-modal').style.display='none'; }
     };
 
-    
-    document.getElementById('product-search').addEventListener('input', (e) => {
-        renderProducts(currentCategory, e.target.value);
-    });
-
-    
+    // 搜尋與輪播
+    document.getElementById('product-search').oninput = (e) => renderProducts(currentCategory, e.target.value);
     const slides = document.querySelectorAll('.slide'); const dots = document.querySelectorAll('.dot'); let curr = 0;
-    function show(i) { slides.forEach(s=>s.classList.remove('active')); dots.forEach(d=>d.classList.remove('active')); slides[i].classList.add('active'); dots[i].classList.add('active'); curr=i; }
-    function next() { show((curr+1)%slides.length); }
-    let timer = setInterval(next, 5000);
-    dots.forEach((d,i) => d.onclick = () => { clearInterval(timer); show(i); timer = setInterval(next, 5000); });
-
-    
-    const scrollReveal = () => { document.querySelectorAll('.reveal').forEach(el => { if(el.getBoundingClientRect().top < window.innerHeight-100) { el.style.opacity="1"; el.style.transform="translateY(0)"; } }); };
-    window.addEventListener('scroll', scrollReveal);
-    scrollReveal();
+    const showSlide = (i) => { slides.forEach(s=>s.classList.remove('active')); dots.forEach(d=>d.classList.remove('active')); slides[i].classList.add('active'); dots[i].classList.add('active'); curr=i; };
+    let timer = setInterval(() => showSlide((curr+1)%slides.length), 5000);
+    dots.forEach((d,i) => d.onclick = () => { clearInterval(timer); showSlide(i); timer = setInterval(() => showSlide((curr+1)%slides.length), 5000); });
 });
